@@ -11,6 +11,17 @@ SETLOCAL EnableDelayedExpansion
 
 SET sErrMessage=
 
+:: check to be sure we are on Windows 7 and above
+FOR /f "tokens=4-7 delims=[.] " %%i IN ('ver') DO (IF %%i==Version (SET /a major_v=%%j) ELSE (SET /a major_v=%%i))
+FOR /f "tokens=4-7 delims=[.] " %%i IN ('ver') DO (IF %%i==Version (SET /a minor_v=%%k) ELSE (SET /a minor_v=%%j))
+SET /a Windows_version = %major_v%*10 + minor_v
+
+:: Refer to https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_versions for different Windows versions
+IF %Windows_version% LSS 61 (
+	SET sErrMessage=Please run it on Windows 7 and above
+    GOTO :ErrorHandling
+)
+
 @ECHO.
 @ECHO ----------------------------------------------------------
 @ECHO check to see if you are running the script as a local admin
